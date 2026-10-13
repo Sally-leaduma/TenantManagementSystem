@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">TenantManagementSystem</string>
+    <string name="tenant_management_title">Tenant Management</string>
+    <string name="app_name">Tenant Management System</string>
+    <string name="enter_tenant_name">Enter Tenant Name</string>
+    <string name="enter_phone_number">Enter Phone Number</string>
+    <string name="enter_rent_paid">Enter Rent Paid</string>
+    <string name="save">Save</string>
+    <string name="saved_tenant_message">Tenant saved successfully!</string>
 </resources>

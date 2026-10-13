@@ -1,47 +1,48 @@
 package com.example.tenantmanagementsystem
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.tenantmanagementsystem.ui.theme.TenantManagementSystemTheme
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.example.tenantmanagementsystem.databinding.ActivityMainBinding
 
-class MainActivity : ComponentActivity() {
+// This defines the Tenant structure directly since you don't have a separate Tenant.kt file
+data class Tenant(val name: String, val phone: String, val rent: String)
+
+class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+    private var lastTenant: Tenant? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            TenantManagementSystemTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // 1. SAVE BUTTON LOGIC
+        binding.saveButton.setOnClickListener {
+            // FIXED LINES: These now match the official IDs from your lab layout manual
+            val name = binding.tenantNameEditText.text.toString()
+            val phone = binding.phoneEditText.text.toString()
+            val rent = binding.rentEditText.text.toString()
+
+            val tenant = Tenant(name, phone, rent)
+            lastTenant = tenant
+
+            Toast.makeText(this, "Tenant Saved Successfully!", Toast.LENGTH_SHORT).show()
         }
-    }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+        // 2. CALL BUTTON LOGIC (Step 12)
+        binding.callButton.setOnClickListener {
+            val tenant = lastTenant
+            if (tenant == null) {
+                Toast.makeText(this, "Save a tenant first", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TenantManagementSystemTheme {
-        Greeting("Android")
+            // Implicit Intent: Launches phone dialer application
+            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${tenant.phone}"))
+            startActivity(intent)
+        }
     }
 }
